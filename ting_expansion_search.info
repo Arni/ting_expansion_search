@@ -1,0 +1,11 @@
+name = Ting expansion search
+description = Puts links to expanded search profile on search result page
+package = Ding!
+version = "7.x-1.x-dev"
+core = 7.x
+dependencies[] = ting
+dependencies[] = search
+stylesheets[all][] = css/ting-expansion-search.css
+files[]=lib/TingClientMultiRequestAdapter.php
+
+

@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Ting smart carousel module main file.
+ */
+
+
+
+function ting_expansion_search_menu() {
+  $items = array();
+
+
+  $items['ting/expansionsearch'] = array(
+    'title' => 'Retreives count of search results for expanded profiles',
+    'page callback' => 'ting_expansion_search_count',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+
+  return $items;
+}
+
+function ting_expansion_search_theme($existing, $type, $theme, $path) {
+  return array(
+      'ting_expansion_search' => array(
+          'variables' => array(
+              'links' => NULL,
+          ),
+          'template' => 'ting-expansion-search',
+          'path' => $path . '/templates',
+      ),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * args, contexts, content_types.
+ */
+function ting_expansion_search_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return "plugins/$plugin";
+  }
+}
+
+function ting_expansion_search_count ($query) {
+  
+}
+
+function ting_expansion_search_links() {
+  $search_result = ting_search_current_results();
+  $result_links = array();
+  $links = array();
+  $links[] = array('title' => 'Standard', 'profile' => null);
+  $links[] = array('title' => 'Ebøger', 'profile' => 'eboeger_danske');
+  $links[] = array('title' => 'Digitale artikler', 'profile' => 'digart');
+  $links[] = array('title' => 'Digitale fagbøger', 'profile' => 'digfag');
+  file_put_contents("/var/www/drupal7vm/drupal/debug/exp2.txt", print_r($links, TRUE), FILE_APPEND);
+  if ($search_result) {
+    $query = $search_result->getSearchRequest()->getFullTextQuery();
+    foreach ($links as $link) {
+      $class= '';
+      $url = '/search/ting/' . $query;
+      if (isset($link['profile'])) {
+        $url .= '?&profile=' . $link['profile'];
+      } else {
+        $class = 'ting-search-expansion-active';
+      }
+      $profile = '';
+      if (!empty($_GET['profile'])) {
+        $profile = $_GET['profile'];
+        $class= '';
+        if ($profile == $link['profile']) {
+          $class = 'ting-search-expansion-active';
+        }
+      }
+      $result_links[] = '<a href="' . $url . '" class="' . $class . '">' . $link['title'] . '</a>'; //l($link['title'], $url);
+    }
+    file_put_contents("/var/www/drupal7vm/drupal/debug/exp1.txt", print_r($result_links, TRUE), FILE_APPEND);
+    return theme('ting_expansion_search', array('links' => $result_links));
+  } else {
+    return '';
+  }
+}

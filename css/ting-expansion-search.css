@@ -1,0 +1,35 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11-05-2019, 15:13:10
+    Author     : DQ26525
+*/
+
+.ting-expansion-search-links {
+    display: flex;
+    flex-wrap: wrap;
+
+    background-color: rgba(255,138,0,.2);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 0px;
+    clear: both;    
+}
+
+.ting-expansion-search-link {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.ting-expansion-search-link a {
+    font-size: 16px;
+
+}
+
+.ting-search-expansion-active {
+    font-weight: bold;
+    border-bottom: 3px solid #4d898f
+}
