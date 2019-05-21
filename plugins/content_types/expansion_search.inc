@@ -23,7 +23,7 @@ function ting_expansion_search_content_type_render($subtype, $conf, $panel_args,
   // Define the return block.
   $block = new stdClass();
   $content = ting_expansion_search_links();
-
+  
   // Set block content.
   $block->content = $content;
   return $block;
