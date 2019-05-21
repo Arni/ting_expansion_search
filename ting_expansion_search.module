@@ -69,9 +69,9 @@ function ting_expansion_search_multi($query) {
   
   foreach ($profiles as $profile) {
     $request = opensearch_get_request_factory()->getSearchRequest();
+    
 
-
-    $request->setQuery($query);
+    $request->setQuery($query . ' and holdingsitem.agencyid=' . variable_get('ting_agency', '773000'));
     if ($agency = variable_get('ting_agency', FALSE)) {
       $request->setAgency($agency);
     }
