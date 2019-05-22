@@ -29,9 +29,4 @@ function ting_expansion_search_content_type_render($subtype, $conf, $panel_args,
   return $block;
 }
 
-/**
- * Enable admin settings page.
- */
-function ting_inspiration_list_content_type_edit_form($form, &$form_state) {
-  return $form;
-}
+
