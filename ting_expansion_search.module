@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Ting smart carousel module main file.
+ * Ting expansion search module main file.
  */
 
 
@@ -47,18 +47,7 @@ function ting_expansion_search_ctools_plugin_directory($module, $plugin) {
 }
 
 function ting_expansion_search_count ($query) {
-  $res = array();
-  $links = array(
-      'min' => 'Standard',
-      'ebog' => 'Ebøger',
-      'digart' => 'Digitale artikler',
-      'digfag' => 'Digitale fagbøger',
-  );
-  file_put_contents("/var/www/drupal7vm/drupal/debug/exp4.txt", print_r($query, TRUE), FILE_APPEND);
   $results = ting_expansion_search_multi($query);
-//  foreach ($results as $key=> $result) {
-//     $res[$key] = $links[$key] . ' (' . $result[$key] . 
-//  }
   return drupal_json_output ($results);
 }
 
@@ -68,8 +57,7 @@ function ting_expansion_search_multi($query) {
   $profiles = array('min', 'ebog', 'digart',  'digfag');
   
   foreach ($profiles as $profile) {
-    $request = opensearch_get_request_factory()->getSearchRequest();
-    
+    $request = opensearch_get_request_factory()->getSearchRequest();   
 
     $request->setQuery($query . ' and holdingsitem.agencyid=' . variable_get('ting_agency', '773000'));
     if ($agency = variable_get('ting_agency', FALSE)) {
@@ -77,29 +65,22 @@ function ting_expansion_search_multi($query) {
     }
     $request->setStart(1);
     $request->setNumResults(0);
-    // Set search profile, if applicable.
 
     $request->setProfile($profile);
     $req[] = $request;
   }
-
-  file_put_contents("/var/www/drupal7vm/drupal/debug/exp5.txt", print_r($req, TRUE), FILE_APPEND);
   
-
-
   $results = $multi_request->execute($req);
-  file_put_contents("/var/www/drupal7vm/drupal/debug/exp6.txt", print_r($results, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/exp6.txt", print_r($results, TRUE), FILE_APPEND);
   
   $res = array();
   $i = 0;
   foreach ($results as $result) {
-     //file_put_contents("/var/www/drupal7vm/drupal/debug/exp11.txt", print_r( $result , TRUE), FILE_APPEND);
     $response = $req[$i]->parseResponse($result);
-    //file_put_contents("/var/www/drupal7vm/drupal/debug/exp10.txt", print_r($response , TRUE), FILE_APPEND);
-    $res[$profiles[$i]] = $response->numTotalObjects;//->getNumTotalObjects(); //The search result come back in the same order as the requests.
+    $res[$profiles[$i]] = $response->numTotalObjects; //The search result come back in the same order as the requests.
     $i++; 
   }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/exp9.txt", print_r($res, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/exp9.txt", print_r($res, TRUE), FILE_APPEND);
   return $res;
 }
 
@@ -112,7 +93,7 @@ function ting_expansion_search_links() {
   $links['ebog'] = array('title' => 'Ebøger', 'profile' => 'ebog');
   $links['digart'] = array('title' => 'Digitale artikler', 'profile' => 'digart');
   $links['digfag'] = array('title' => 'Digitale fagbøger', 'profile' => 'digfag');
-  file_put_contents("/var/www/drupal7vm/drupal/debug/exp2.txt", print_r($links, TRUE), FILE_APPEND);
+
   if ($search_result) {
     $query = $search_result->getSearchRequest()->getFullTextQuery();
     foreach ($links as $key => $link) {
@@ -131,12 +112,12 @@ function ting_expansion_search_links() {
           $class = 'ting-search-expansion-active';
         }
       }
-      $result_links[] = '<a href="' . $url . '" class="' . $class . '" id="ting-search-expansion-link-' . $key . '">'   . $link['title'] . ' (...)' . '</a>'; //l($link['title'], $url);
+      $result_links[] = '<a href="' . $url . '" class="' . $class . '" id="ting-search-expansion-link-' . $key . '">'   . $link['title'] . ' (...)' . '</a>'; 
       drupal_add_js(drupal_get_path('module', 'ting_expansion_search') . '/js/ting-expansion-search.js');
       drupal_add_js(array('tingSearchExpansion' => array('url' => '/ting/expansionsearch/' . $query)), 'setting');
       
     }
-    file_put_contents("/var/www/drupal7vm/drupal/debug/exp1.txt", print_r($result_links, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupal7vm/drupal/debug/exp1.txt", print_r($result_links, TRUE), FILE_APPEND);
     return theme('ting_expansion_search', array('links' => $result_links));
   } else {
     return '';

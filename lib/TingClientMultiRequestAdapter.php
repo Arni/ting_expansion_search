@@ -32,29 +32,25 @@ class TingClientMultiRequestAdapter  {
       if (!isset($soapParameters['outputType'])) {
         $soapParameters['outputType'] = 'json';
       }
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi5.txt", print_r($soapAction, TRUE), FILE_APPEND);
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi6.txt", print_r($soapParameters, TRUE), FILE_APPEND);
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi7.txt", print_r($client, TRUE), FILE_APPEND);
+
       $soap_requests[] = $this->buildSoapRequest($soapAction, $soapParameters, $client);
     }
-    file_put_contents("/var/www/drupal7vm/drupal/debug/multi4.txt", print_r($soap_requests, TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupal7vm/drupal/debug/multi4.txt", print_r($soap_requests, TRUE), FILE_APPEND);
     $curl_options = variable_get('curl_options');
-    file_put_contents("/var/www/drupal7vm/drupal/debug/multi9.txt", print_r($curl_options , TRUE), FILE_APPEND);
     try {
       try {
         $startTime = explode(' ', microtime());
 
         $response = curl_multi($soap_requests); 
-        file_put_contents("/var/www/drupal7vm/drupal/debug/multi3.txt", print_r($response, TRUE), FILE_APPEND);
+        //file_put_contents("/var/www/drupal7vm/drupal/debug/multi3.txt", print_r($response, TRUE), FILE_APPEND);
         $stopTime = explode(' ', microtime());
         $time = floatval(($stopTime[1]+$stopTime[0]) - ($startTime[1]+$startTime[0]));
-file_put_contents("/var/www/drupal7vm/drupal/debug/multi14.txt", print_r($time . ' - ', TRUE), FILE_APPEND);
+
         //$this->logger->log('Completed SOAP request ' . $soapAction . ' ' . $request->getWsdlUrl() . ' (' . round($time, 3) . 's). Request body: ' . $client->requestBodyString . ' Response: ' . $response);
 
         // If using JSON and DKABM, we help parse it.
         if ($soapParameters['outputType'] == 'json') {
           $result = array();
-          file_put_contents("/var/www/drupal7vm/drupal/debug/multi10.txt", print_r(json_decode($response), TRUE), FILE_APPEND);
           foreach ($response as $res) {
             $result[] = json_decode($res);
           }

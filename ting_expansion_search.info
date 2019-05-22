@@ -5,6 +5,7 @@ version = "7.x-1.x-dev"
 core = 7.x
 dependencies[] = ting
 dependencies[] = search
+dependencies[] = curl_multi
 stylesheets[all][] = css/ting-expansion-search.css
 files[]=lib/TingClientMultiRequestAdapter.php
 
